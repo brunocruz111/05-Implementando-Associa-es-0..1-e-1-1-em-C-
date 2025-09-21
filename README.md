@@ -1,42 +1,45 @@
+Este repositório contém o Trabalho 5 desenvolvido na disciplina de Programação Orientada a Objetos da Universidade Tecnológica Federal do Paraná (UTFPR) - Câmpus Medianeira.
+📘 Informações da Disciplina
 
-Implementação de Vínculos em C#: Usuário (1:1) e Cliente (0..1)
-Este projeto demonstra a correta implementação de associações 1:1 (obrigatória) e 0..1 (opcional) em C#, seguindo os princípios de design por contrato, validação na fronteira e navegabilidade mínima, conforme as diretrizes da atividade.
+Curso: Ciência da Computação
+Disciplina: Programação Orientada a Objetos
+Professor: Everton Coimbra
 
-Cenário Escolhido
-O cenário modelado abrange duas associações distintas:
+👥 Integrantes do Grupo
 
-Usuário e Dados Biométricos (1:1): Um Usuário é uma entidade que sempre deve ter DadosBiometricos para fins de autenticação. A associação é obrigatória na criação do Usuário e imutável. Um conjunto de dados biométricos pertence a um único usuário.
+Alan Lino dos Reis
+Bruno Luis da Cruz
+Hilário Canci Neto
+Pedro Gabriel Sepulveda Borgheti
+Pedro Lucas Reis
 
-Cliente e Endereço de Entrega Preferencial (0..1): Um Cliente pode ter um EnderecoPreferencial. Este vínculo é opcional, podendo o endereço ser adicionado ou removido após a criação do cliente. Um endereço preferencial, se existir, pertence a um único cliente.
+1. Cenário e Invariantes de Domínio
+O cenário proposto modela duas relações fundamentais entre classes:
 
-Invariantes de Domínio e Justificativas
-Vínculo 1:1: Usuário e DadosBiometricos
-Invariante: Um Usuário deve sempre ter um DadosBiometricos associado.
+Vínculo 1:1 (Obrigatório): Uma Pessoa (Pessoa) deve ter exatamente um Cpf (Cadastro de Pessoa Física). O Cpf é um dado de identificação que não faz sentido existir sem estar vinculado a uma Pessoa.
 
-Garantia por Design:
+Vínculo 0..1 (Opcional): Um Autor (Autor) pode ter ou não um Blog. A existência do Blog é opcional, mas se ele existir, estará associado a um Autor.
 
-O DadosBiometricos é exigido como parâmetro no construtor da classe Usuario.
+Invariantes de Domínio:
 
-A propriedade BiometricData é get-only, garantindo que não possa ser alterada após a criação do objeto.
+Para o Cpf: Um Cpf não pode ser nulo ou vazio e deve ser composto por 11 caracteres numéricos.
 
-Uma validação na fronteira (ArgumentNullException) impede a criação de um Usuário com dados biométricos nulos.
+Para a Pessoa: Uma Pessoa deve ser criada com um Cpf válido.
 
-Vínculo 0..1: Cliente e EnderecoPreferencial
-Invariante: Um Cliente pode ter no máximo um EnderecoPreferencial e a ausência é válida.
+Para o Autor: Um Autor deve ter um nome válido. Se um Blog for associado a um Autor, seu título não pode ser nulo ou vazio.
 
-Garantia por Design:
+Vínculos:
 
-A propriedade PreferredAddress é anulável (Endereco?) e tem private set, impedindo atribuições diretas de fora da classe.
+A relação Pessoa-Cpf é de composição obrigatória (1:1).
 
-Um método de domínio (AtribuirEnderecoPreferencial) controla a atribuição, verificando se um endereço já está atribuído e se o novo endereço não é nulo.
+A relação Autor-Blog é de associação opcional (0..1).
 
-Um método RemoverEnderecoPreferencial permite que o vínculo seja desfeito, restaurando o estado nulo.
+2. Navegabilidade Mínima
+A navegabilidade foi projetada para ser mínima, evitando acoplamento desnecessário entre as classes:
 
-Decisões de Navegabilidade
-Ambas as associações são unidirecionais. A navegabilidade foi definida do objeto "mestre" para o objeto "dependente" (Usuario -> DadosBiometricos e Cliente -> Endereco).
+Pessoa -> Cpf: A classe Pessoa sabe qual é o seu Cpf. A classe Cpf não precisa saber a qual Pessoa pertence, pois seu papel é apenas encapsular e validar o valor do CPF.
 
-Não há necessidade de navegabilidade inversa (DadosBiometricos -> Usuário), pois o caso de uso não exige que os dados biométricos saibam a que usuário pertencem.
+Autor -> Blog: A classe Autor sabe qual é o seu Blog, se houver. A classe Blog não precisa saber qual Autor o escreve.
 
-Similarmente, não é necessário que o EnderecoPreferencial saiba a que Cliente pertence.
-
-Essa abordagem de direção mínima reduz o acoplamento, simplifica a lógica de sincronização de estado e torna o modelo mais robusto e fácil de manter.
+3. Validação na Fronteira
+Toda a validação dos dados de entrada é realizada nos construtores das classes, garantindo que nenhum objeto inválido possa ser instanciado. Exceções (ArgumentException) são lançadas caso os dados não atendam aos requisitos. Isso é conhecido como "fail-fast" e ajuda a manter a integridade do domínio desde a criação dos objetos.
